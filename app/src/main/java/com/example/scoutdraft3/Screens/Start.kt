@@ -24,7 +24,7 @@ fun StartScreen(navController: NavHostController, modes: List<BottomNavItem>){
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Start Screen")
+                    Text(text = "Miguel's Start Screen")
                 },
                 backgroundColor = MaterialTheme.colors.primary,
                 elevation = 10.dp
@@ -106,12 +106,12 @@ fun StartScreen(navController: NavHostController, modes: List<BottomNavItem>){
                     Text(text = "Start 'er up!!!")
                 }
 
-                Button(
-                    onClick = { resetVariables() },
-                    Modifier.align(Alignment.CenterHorizontally)
-                ){
-                    Text(text = "Reset")
-                }
+//                Button(
+//                    onClick = { resetVariables() },
+//                    Modifier.align(Alignment.CenterHorizontally)
+//                ){
+//                    Text(text = "Reset")
+//                }
         }
     })
 }

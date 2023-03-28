@@ -18,6 +18,7 @@ fun ButtonRow (upper: () -> Unit, num: Int , downer: () -> Unit){
         Modifier
             .height(80.dp)
             .width(225.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceAround, ) {
+
         Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween) {
             Button(onClick = downer,
                 Modifier
@@ -25,14 +26,12 @@ fun ButtonRow (upper: () -> Unit, num: Int , downer: () -> Unit){
                     .height(buttonSize),
             ) { Text(text = "-", fontSize = 36.sp, textAlign = TextAlign.Center) }
 
-
             Text(text = num.toString(),
                 Modifier
                     .align(Alignment.CenterVertically),
                 textAlign = TextAlign.Center,
                 fontSize = 24.sp
             )
-
 
             Button(onClick =  upper,
                 Modifier
@@ -46,7 +45,6 @@ fun ButtonRow (upper: () -> Unit, num: Int , downer: () -> Unit){
 @Composable
 fun TextColumn(){
     Column (verticalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.height(425.dp)) {
-        Spacer(modifier = Modifier.size(5.dp))
         Text(text = "High")
         Text(text = "Mid")
         Text(text = "Low")
@@ -55,10 +53,10 @@ fun TextColumn(){
 
 @Composable
 fun IntakeText(){
-    Column (verticalArrangement = Arrangement.SpaceAround, modifier = Modifier.height(425.dp)){
+    Column (verticalArrangement = Arrangement.SpaceAround, modifier = Modifier.height(425.dp), horizontalAlignment = Alignment.CenterHorizontally){
         Spacer(modifier = Modifier)
-        Text(text = "Shelf")
-        Text(text = "Floor")
+        Text(text = "Substation", textAlign = TextAlign.Center)
+        Text(text = "Floor", textAlign = TextAlign.Center)
     }
 }
 

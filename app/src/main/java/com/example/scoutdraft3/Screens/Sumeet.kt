@@ -63,11 +63,13 @@ fun AutonScreen(
                         .align(Alignment.CenterHorizontally)
                         .padding(8.dp)
                 ) {
-                    Row (Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
-                        MobilityBox()
-                        AutonDocking()
+                    Row (Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceBetween) {
+                            MobilityBox()
+                            Spacer(modifier = Modifier.size(8.dp))
+                            AutonDocking()
+                        }
                     }
-
                 }
             }
         }

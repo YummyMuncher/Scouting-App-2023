@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
 import kotlinx.coroutines.*
 import java.io.BufferedWriter
 import java.io.FileNotFoundException
@@ -98,7 +97,11 @@ var defenceNotes: String = ""
 
 var breakNotes: String = ""
 
-var foulNotes: String = ""
+var foulNotes: String = "0"
+
+var extraNotes: String = ""
+
+var scoutName: String = ""
 
 
 
@@ -216,7 +219,7 @@ fun IntakeConeTeleop(){
 
 @Composable
 fun MatchTypeSelect(){
-    val radioOptions = listOf("Qualifier", "Playoff")
+    val radioOptions = listOf("Qualifications", "Playoffs")
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
     Row {
         radioOptions.forEach { text ->
@@ -226,7 +229,8 @@ fun MatchTypeSelect(){
                         selected = (text == selectedOption),
                         onClick = { onOptionSelected(text) }
                     )
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 val context = LocalContext.current
                 RadioButton(
@@ -261,7 +265,7 @@ fun Docking(){
                 Modifier
                     .selectable(
                         selected = (text == selectedOption),
-                        onClick = {  onOptionSelected(text); docking = text }
+                        onClick = { onOptionSelected(text); docking = text }
                     )
                     .padding(horizontal = 8.dp)
             ) {
@@ -355,7 +359,6 @@ fun TextFieldMatch(){
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
     }
-
 }
 
 @Composable
@@ -380,21 +383,6 @@ fun TextFieldTeam(){
 }
 
 @Composable
-fun TextFieldDefence(){
-    var text by rememberSaveable{ mutableStateOf(defenceNotes) }
-    TextField(
-        value = text,
-        onValueChange = {
-            text = it
-            defenceNotes = text },
-        Modifier
-            .width(300.dp),
-        label = { Text(text = "Defence notes") },
-        placeholder = { Text(text = "Were they defended or a defence bot?") },
-    )
-}
-
-@Composable
 fun TextFieldBreaks(){
     var text by rememberSaveable{ mutableStateOf(breakNotes) }
     TextField(
@@ -404,23 +392,54 @@ fun TextFieldBreaks(){
             breakNotes = text },
         Modifier
             .width(300.dp),
-        label = { Text(text = "What went wrong?") },
-        placeholder = { Text(text = "Were they fine?") },
+        label = { Text(text = "Did they break? If so, how?") },
+        placeholder = { Text(text = "Explain what broke?") },
     )
 }
 
 @Composable
-fun TextFieldFoul(){
-    var text by rememberSaveable{ mutableStateOf(foulNotes) }
+fun TextFieldFoul() {
+    var text by rememberSaveable { mutableStateOf(foulNotes) }
     TextField(
         value = text,
         onValueChange = {
             text = it
-            foulNotes = text },
+            foulNotes = text
+        },
         Modifier
             .width(300.dp),
-        label = { Text(text = "Fouls?") },
-        placeholder = { Text(text = "Did the ref wave his hands?") },
+        label = { Text(text = "Alliance penalty points") },
+        placeholder = { Text(text = "Get from score screen") },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+    )
+}
+
+@Composable
+fun TextFieldExtra(){
+    var text by rememberSaveable{ mutableStateOf(extraNotes) }
+    TextField(
+        value = text,
+        onValueChange = {
+            text = it
+            extraNotes = text },
+        Modifier
+            .width(300.dp),
+        label = { Text(text = "Extra notes") },
+        placeholder = { Text(text = "for anything misc.") },
+    )
+}
+@Composable
+fun TextFieldName(){
+    var text by rememberSaveable{ mutableStateOf(scoutName) }
+    TextField(
+        value = text,
+        onValueChange = {
+            text = it
+            scoutName = text },
+        Modifier
+            .width(300.dp),
+        label = { Text(text = "Scouter name: ") },
+        placeholder = { Text(text = "You must put your name!") },
     )
 }
 
@@ -485,12 +504,18 @@ fun ExportButton(context: Context){
                 breakNotes = "N/A"
             if(foulNotes.isEmpty())
                 foulNotes = "N/A"
+            if(extraNotes.isEmpty())
+                extraNotes = "N/A"
 
             exportString =
-                "$teamNumber~ $matchNumber~ $matchType~ $lowConeScoreAuton~ $midConeScoreAuton~ $highConeScoreAuton~ $lowCubeScoreAuton~ $midCubeScoreAuton~ $highCubeScoreAuton~ $lowConeScoreTeleop~ $midConeScoreTeleop~ $highConeScoreTeleop~ $lowCubeScoreTeleop~ $midCubeScoreTeleop~ $highCubeScoreTeleop~ $intakeFloorCones~ $intakeShelfCones~ $intakeFloorCubes~ $intakeShelfCubes~ $docking~ $mobility~ $balanceAuton~ $defenceNotes~ $breakNotes~ $foulNotes~ $DefendedTimer1~ $DefenceTimer1"
+                "$teamNumber~ $matchNumber~ $matchType~ $lowConeScoreAuton~ $midConeScoreAuton~ $highConeScoreAuton~ $lowCubeScoreAuton~ $midCubeScoreAuton~ $highCubeScoreAuton~ $lowConeScoreTeleop~ $midConeScoreTeleop~ $highConeScoreTeleop~ $lowCubeScoreTeleop~ $midCubeScoreTeleop~ $highCubeScoreTeleop~ $intakeFloorCones~ $intakeShelfCones~ $intakeFloorCubes~ $intakeShelfCubes~ $docking~ $mobility~ $balanceAuton~ $breakNotes~ $foulNotes~ $extraNotes~ $scoutName~ $DefendedTimer1~ $DefenceTimer1"
             try {
-                writeToFile(exportString)
-                popupControl = true
+                if(!scoutName.isEmpty()){
+                    writeToFile(exportString)
+                    popupControl = true
+                } else{
+                    Toast.makeText(context, "You didnt enter your name!!!", Toast.LENGTH_SHORT).show()
+                }
             } catch (e: FileNotFoundException) {
                 Toast.makeText(context, "YOU DIDN'T ALLOW SYSTEM PRIVILEGES", Toast.LENGTH_SHORT)
                     .show()
@@ -500,16 +525,13 @@ fun ExportButton(context: Context){
             Text(text = "Export")
         }
         if (popupControl){
-            Popup(alignment = Alignment.TopCenter, properties = PopupProperties(dismissOnClickOutside = true)) {
+            Popup(alignment = Alignment.TopCenter) {
                 Image(bitmap = QRStuff(exportString), contentDescription = null)
             }
         }
         exportString =
-            "$teamNumber~ $matchNumber~ $matchType~ $lowConeScoreAuton~ $midConeScoreAuton~ $highConeScoreAuton~ $lowCubeScoreAuton~ $midCubeScoreAuton~ $highCubeScoreAuton~ $lowConeScoreTeleop~ $midConeScoreTeleop~ $highConeScoreTeleop~ $lowCubeScoreTeleop~ $midCubeScoreTeleop~ $highCubeScoreTeleop~ $intakeFloorCones~ $intakeShelfCones~ $intakeFloorCubes~ $intakeShelfCubes~ $docking~ $mobility~ $balanceAuton~ $defenceNotes~ $breakNotes~ $foulNotes~ $DefendedTimer1~ $DefenceTimer1"
-
-
+            "$teamNumber~ $matchNumber~ $matchType~ $lowConeScoreAuton~ $midConeScoreAuton~ $highConeScoreAuton~ $lowCubeScoreAuton~ $midCubeScoreAuton~ $highCubeScoreAuton~ $lowConeScoreTeleop~ $midConeScoreTeleop~ $highConeScoreTeleop~ $lowCubeScoreTeleop~ $midCubeScoreTeleop~ $highCubeScoreTeleop~ $intakeFloorCones~ $intakeShelfCones~ $intakeFloorCubes~ $intakeShelfCubes~ $docking~ $mobility~ $balanceAuton~ $breakNotes~ $foulNotes~ $extraNotes~ $scoutName~ $DefendedTimer1~ $DefenceTimer1"
     }
-
 }
 
 class DefenceStopWatch {
@@ -596,35 +618,35 @@ class DefendedStopWatch {
         return localDateTime.format(formatter)
     }
 }
-
-fun resetVariables(){
-    exportString = "what?"
-    selectedScreen = 0
-    lowConeScoreAuton = 0
-    lowCubeScoreAuton = 0
-    midConeScoreAuton = 0
-    midCubeScoreAuton = 0
-    highConeScoreAuton = 0
-    highCubeScoreAuton = 0
-    mobility = false
-    balanceAuton = ""
-    lowConeScoreTeleop = 0
-    lowCubeScoreTeleop = 0
-    midConeScoreTeleop = 0
-    midCubeScoreTeleop = 0
-    highConeScoreTeleop = 0
-    highCubeScoreTeleop = 0
-    intakeShelfCubes = 0
-    intakeFloorCubes = 0
-    intakeFloorCones = 0
-    intakeShelfCones = 0
-    DefenceTimer1 = "00:00:000"
-    DefendedTimer1 = "00:00:00"
-    docking = ""
-    defenceNotes = ""
-    breakNotes = ""
-    foulNotes = ""
-}
+//
+//fun resetVariables(){
+//    exportString = "what?"
+//    selectedScreen = 0
+//    lowConeScoreAuton = 0
+//    lowCubeScoreAuton = 0
+//    midConeScoreAuton = 0
+//    midCubeScoreAuton = 0
+//    highConeScoreAuton = 0
+//    highCubeScoreAuton = 0
+//    mobility = false
+//    balanceAuton = ""
+//    lowConeScoreTeleop = 0
+//    lowCubeScoreTeleop = 0
+//    midConeScoreTeleop = 0
+//    midCubeScoreTeleop = 0
+//    highConeScoreTeleop = 0
+//    highCubeScoreTeleop = 0
+//    intakeShelfCubes = 0
+//    intakeFloorCubes = 0
+//    intakeFloorCones = 0
+//    intakeShelfCones = 0
+//    DefenceTimer1 = "00:00:000"
+//    DefendedTimer1 = "00:00:00"
+//    docking = ""
+//    defenceNotes = ""
+//    breakNotes = ""
+//    foulNotes = ""
+//}
 
 /*
 teamNumber,matchNumber,matchType,lowConeScoreAuton,midConeScoreAuton,highConeScoreAuton,lowCubeScoreAuton,midCubeScoreAuton,highCubeScoreAuton,lowConeScoreTeleop,midConeScoreTeleop,highConeScoreTeleop,lowCubeScoreTeleop,midCubeScoreTeleop,highCubeScoreTeleop,intakeShelfCubes,intakeFloorCubes,intakeFloorCones,intakeShelfCones,docking,mobility,balanceAuton,defenceNotes,breakNotes,foulNotes,DefendedTimer1,DefenceTimer1

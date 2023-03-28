@@ -40,17 +40,15 @@ fun GeneralScreen(navController: NavHostController,
             }
         },
         content = { padding ->
-            Column(Modifier.fillMaxWidth().padding(padding), verticalArrangement = Arrangement.SpaceEvenly, horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(padding), verticalArrangement = Arrangement.SpaceEvenly, horizontalAlignment = Alignment.CenterHorizontally) {
                 Spacer(modifier = Modifier.size(10.dp))
 //                Text(text = "Endgame Screen", Modifier.align(Alignment.CenterHorizontally), textAlign = TextAlign.Center, fontSize = 48.sp)
 //                Spacer(modifier = Modifier.size(50.dp))
                 Box(Modifier.align(Alignment.CenterHorizontally)) {
                     Docking()
-                }
-                Spacer(modifier = Modifier.size(20.dp))
-
-                Box(Modifier.align(Alignment.CenterHorizontally)) {
-                    TextFieldDefence()
                 }
                 Spacer(modifier = Modifier.size(20.dp))
 
@@ -61,6 +59,16 @@ fun GeneralScreen(navController: NavHostController,
 
                 Box(Modifier.align(Alignment.CenterHorizontally)) {
                     TextFieldBreaks()
+                }
+                Spacer(modifier = Modifier.size(20.dp))
+
+                Box(Modifier.align(Alignment.CenterHorizontally)) {
+                    TextFieldExtra()
+                }
+                Spacer(modifier = Modifier.size(50.dp))
+
+                Box(Modifier.align(Alignment.CenterHorizontally)) {
+                    TextFieldName()
                 }
 
                 Spacer(modifier = Modifier.size(20.dp))
